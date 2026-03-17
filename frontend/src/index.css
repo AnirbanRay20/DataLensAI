@@ -1,0 +1,174 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* { box-sizing: border-box; }
+
+:root {
+  --bg-main: #0B0F19;
+  --bg-card: #121826;
+  --bg-glass: rgba(255, 255, 255, 0.05);
+
+  --accent-primary: #6366F1;   /* Indigo */
+  --accent-secondary: #A855F7; /* Purple */
+  --accent-success: #22C55E;   /* Green */
+  --accent-warning: #F59E0B;   /* Orange */
+
+  --text-main: #F9FAFB;
+  --text-muted: #9CA3AF;
+}
+
+body {
+  background: radial-gradient(circle at 50% 30%, rgba(99,102,241,0.25), transparent 60%),
+              radial-gradient(circle at 80% 70%, rgba(168,85,247,0.2), transparent 60%),
+              #0B0F19;
+  background-attachment: fixed;
+  color: var(--text-main);
+  font-family: 'Inter', system-ui, sans-serif;
+  margin: 0;
+  min-height: 100vh;
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #1a1d27; }
+::-webkit-scrollbar-thumb { background: #3d4163; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #6366f1; }
+
+.shimmer-bg {
+  background: linear-gradient(90deg, #1a1d27 25%, #22263a 50%, #1a1d27 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+}
+
+.chart-tooltip {
+  background: var(--bg-card) !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
+  backdrop-filter: blur(12px) !important;
+  border-radius: 8px !important;
+  color: var(--text-main) !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 13px !important;
+  padding: 8px 12px !important;
+}
+
+/* Glassmorphism Generic Card */
+.glass-card {
+  backdrop-filter: blur(12px);
+  background: var(--bg-glass);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+}
+
+/* AI Glow specific to Insight Boxes */
+.ai-glow-box {
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  color: white;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+  border: none;
+}
+
+/* Gradient text utility */
+.text-gradient {
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Hero Section */
+.hero-title {
+  font-size: 36px;
+  font-weight: 700;
+  background: linear-gradient(90deg, #6366F1, #A855F7);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-subtitle {
+  color: #9CA3AF;
+  margin-top: 10px;
+}
+
+/* Suggestion Buttons */
+.suggestion-btn {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  transition: 0.3s;
+}
+
+.suggestion-btn:hover {
+  background: linear-gradient(135deg, #6366F1, #A855F7);
+  color: white;
+  transform: translateY(-2px);
+}
+
+/* Glass Input Box */
+.input-box {
+  backdrop-filter: blur(12px);
+  background: rgba(255,255,255,0.05);
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Dropdown Menu Styling */
+.dropdown-menu {
+  position: absolute;
+  top: 40px;
+  right: 10px;
+  background: #1e1e2f;
+  border-radius: 10px;
+  padding: 8px 0;
+  min-width: 160px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.2s ease;
+  pointer-events: none;
+}
+
+.dropdown-menu.show {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.dropdown-item {
+  padding: 10px 16px;
+  font-size: 14px;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.2s;
+  background: transparent;
+  border: none;
+  width: 100%;
+  text-align: left;
+}
+
+.dropdown-item span {
+  white-space: nowrap;
+}
+
+.dropdown-item:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+.dropdown-item.danger {
+  color: #ff5c5c;
+}
