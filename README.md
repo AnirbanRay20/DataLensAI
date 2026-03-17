@@ -15,15 +15,16 @@ Conversational AI Business Intelligence Dashboard — ask plain English question
    # Add your API Key from the Groq Console
    ```
 
-3. **Add the CSV**
-   Place `amazon_sales.csv` in `backend/data/`
-
-4. **Run the app**
+5. **Run the app**
    ```bash
    npm run dev
    ```
    Frontend: http://localhost:5173
    Backend: http://localhost:3001
+
+4. **Add the CSV**
+   Place your CSV file in the WebPage
+
 
 ## Environment Variables
 
