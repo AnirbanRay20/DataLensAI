@@ -1,28 +1,37 @@
 # DataLens AI
 
-Conversational AI Business Intelligence Dashboard — ask plain English questions, get instant interactive charts. Powered by Groq AI.
+DataLensAI is a Conversational AI Business Intelligence Dashboard — ask plain English questions, get instant interactive charts. Powered by Groq AI.
 
 ## Quick Start
+1. **Clone in your Stoarge**
+   -> Go to your desired folder of your Computer
+   -> Open the terminal of the folder
+   -> Type in terminal
+   ```bash
+   git clone https://github.com/AnirbanRay20/DataLensAI.git
+   ```
+   -> Hit Enter
 
-1. **Install dependencies**
+
+2. **Install dependencies**
    ```bash
    npm run install:all
    ```
 
-2. **Set up environment**
+3. **Set up environment**
    ```bash
    cp .env.example .env
    # Add your API Key from the Groq Console
    ```
 
-5. **Run the app**
+4. **Run the app**
    ```bash
    npm run dev
    ```
    Frontend: http://localhost:5173
    Backend: http://localhost:3001
 
-4. **Add the CSV**
+5. **Add the CSV**
    Place your CSV file in the WebPage
 
 
