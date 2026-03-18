@@ -10,18 +10,18 @@
   --bg-card: #121826;
   --bg-glass: rgba(255, 255, 255, 0.05);
 
-  --accent-primary: #6366F1;   /* Indigo */
-  --accent-secondary: #A855F7; /* Purple */
-  --accent-success: #22C55E;   /* Green */
-  --accent-warning: #F59E0B;   /* Orange */
+  --accent-primary: rgba(217, 99, 241, 0.4);
+  --accent-secondary: #A855F7;
+  --accent-success: #22C55E;  
+  --accent-warning: #F59E0B;  
 
   --text-main: #F9FAFB;
   --text-muted: #9CA3AF;
 }
 
 body {
-  background: radial-gradient(circle at 50% 30%, rgba(99,102,241,0.25), transparent 60%),
-              radial-gradient(circle at 80% 70%, rgba(168,85,247,0.2), transparent 60%),
+  background: radial-gradient(circle at 50% 30%, rgba(15, 215, 152, 0.25), transparent 60%),
+              radial-gradient(circle at 80% 70%, rgba(215, 160, 57, 0.2), transparent 60%),
               #0B0F19;
   background-attachment: fixed;
   color: var(--text-main);
@@ -32,7 +32,7 @@ body {
 
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: #1a1d27; }
-::-webkit-scrollbar-thumb { background: #3d4163; border-radius: 3px; }
+::-webkit-scrollbar-thumb { background: #d25937; border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: #6366f1; }
 
 .shimmer-bg {
@@ -72,7 +72,7 @@ body {
   color: white;
   border-radius: 12px;
   padding: 16px;
-  box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+  box-shadow: 0 0 20px rgba(217, 99, 241, 0.4);
   border: none;
 }
 
@@ -101,14 +101,14 @@ body {
 
 /* Suggestion Buttons */
 .suggestion-btn {
-  background: rgba(255,255,255,0.05);
+  background: rgba(255, 255, 255, 0);
   border: 1px solid rgba(255,255,255,0.1);
   border-radius: 12px;
   transition: 0.3s;
 }
 
 .suggestion-btn:hover {
-  background: linear-gradient(135deg, #6366F1, #A855F7);
+  background: linear-gradient(135deg, #f19c63, #f15f5f);
   color: white;
   transform: translateY(-2px);
 }
