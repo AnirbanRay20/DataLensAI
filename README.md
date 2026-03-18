@@ -25,11 +25,20 @@ DataLensAI is a Conversational AI Business Intelligence Dashboard — ask plain 
    ```
 
 4. **Run the app**
+   Open Terminal 1
    ```bash
+   cd backend
+   npm start
+   ```
+   Backend: http://localhost:3001
+
+   Open Terminal 2
+   ```bash
+   cd frontend
    npm run dev
    ```
    Frontend: http://localhost:5173
-   Backend: http://localhost:3001
+   
 
 5. **Add the CSV**
    Place your CSV file in the WebPage
