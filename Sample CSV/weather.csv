@@ -1,0 +1,6 @@
+date,temperature,humidity,wind_speed,city
+2024-01-01,25,60,12,Delhi
+2024-01-02,28,55,10,Mumbai
+2024-01-03,22,70,15,Kolkata
+2024-01-04,26,65,11,Chennai
+2024-01-05,30,50,9,Bangalore

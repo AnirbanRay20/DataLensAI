@@ -1,0 +1,6 @@
+patient_id,age,disease,treatment_cost,admission_date
+1,45,Diabetes,20000,2024-01-01
+2,60,Heart Disease,50000,2024-01-02
+3,30,Flu,5000,2024-01-03
+4,50,Cancer,100000,2024-01-04
+5,25,Infection,7000,2024-01-05

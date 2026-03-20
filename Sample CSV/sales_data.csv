@@ -1,0 +1,21 @@
+order_id,order_date,product_category,product_name,price,discount_percent,quantity_sold,customer_region,payment_method,rating,review_count,discounted_price,total_revenue
+1,2023-01-05,Electronics,Smartphone,30000,10,2,Asia,UPI,4.5,120,27000,54000
+2,2023-01-10,Fashion,T-Shirt,800,5,5,Europe,Credit Card,4.2,80,760,3800
+3,2023-01-15,Books,Novel,500,0,3,Asia,UPI,4.8,200,500,1500
+4,2023-02-01,Electronics,Laptop,70000,15,1,North America,Credit Card,4.6,95,59500,59500
+5,2023-02-10,Fashion,Jeans,2000,10,2,Asia,Debit Card,4.1,60,1800,3600
+6,2023-02-18,Home,Blender,2500,20,1,Europe,UPI,4.3,40,2000,2000
+7,2023-03-02,Electronics,Headphones,3000,5,3,Asia,UPI,4.4,110,2850,8550
+8,2023-03-10,Books,Textbook,1200,10,2,North America,Credit Card,4.7,150,1080,2160
+9,2023-03-15,Fashion,Shoes,3500,15,1,Asia,Debit Card,4.0,75,2975,2975
+10,2023-04-01,Home,Vacuum Cleaner,8000,10,1,Europe,Credit Card,4.5,55,7200,7200
+11,2023-04-12,Electronics,Tablet,25000,12,1,Asia,UPI,4.6,85,22000,22000
+12,2023-04-20,Books,Magazine,200,0,10,Asia,UPI,4.1,30,200,2000
+13,2023-05-05,Fashion,Jacket,4000,20,1,North America,Credit Card,4.3,90,3200,3200
+14,2023-05-15,Home,Microwave,10000,10,1,Asia,Debit Card,4.4,65,9000,9000
+15,2023-06-01,Electronics,Smartwatch,15000,5,2,Europe,UPI,4.5,140,14250,28500
+16,2023-06-10,Books,Comics,300,0,6,Asia,UPI,4.2,50,300,1800
+17,2023-06-18,Fashion,Cap,500,5,4,Asia,Debit Card,3.9,20,475,1900
+18,2023-07-02,Home,Air Conditioner,40000,15,1,North America,Credit Card,4.7,130,34000,34000
+19,2023-07-10,Electronics,Camera,50000,10,1,Asia,UPI,4.6,95,45000,45000
+20,2023-07-20,Fashion,Sunglasses,1500,10,3,Europe,Debit Card,4.1,45,1350,4050
