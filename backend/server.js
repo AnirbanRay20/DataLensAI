@@ -61,6 +61,9 @@ app.post('/api/test-broadcast', (req, res) => {
   res.json({ success: true, clientsNotified: sseClients.size });
 });
 
+const otpRoutes = require('./routes/otp');
+app.use('/api', otpRoutes);
+
 // ─── IN-MEMORY JOB QUEUE ─────────────────────────────────────────────────────
 const activeJobs = new Map();
 
