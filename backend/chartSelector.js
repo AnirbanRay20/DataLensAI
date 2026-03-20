@@ -28,80 +28,33 @@ function sniffColumnType(data, column) {
   return 'string';
 }
 
-// Rule-based logic to intelligently select chart types based on Actual Data
+const VALID_CHART_TYPES = ['bar', 'line', 'area', 'pie', 'donut', 'scatter', 'histogram', 'gauge', 'heatmap', 'table'];
+
 function validateAndSelectChart(geminiChartConfig, data) {
   const { chartType, xKey, yKey, yKeys } = geminiChartConfig;
   const rowCount = data.length;
   const columns = data.length > 0 ? Object.keys(data[0]) : [];
 
-  if (rowCount === 0) {
-    return { ...geminiChartConfig, chartType: 'table', xKey: null, yKey: null, yKeys: [] };
-  }
+  const safeXKey = columns.includes(xKey) ? xKey : columns[0];
+  const safeYKey = columns.includes(yKey) ? yKey : (columns[1] || columns[0]);
+  const safeYKeys = Array.isArray(yKeys)
+    ? yKeys.filter(k => columns.includes(k))
+    : [safeYKey];
 
-  // 1. Analyze column types
-  const colTypes = {};
-  columns.forEach(col => {
-    colTypes[col] = sniffColumnType(data, col);
-  });
+  let finalChartType = VALID_CHART_TYPES.includes(chartType) ? chartType : 'bar';
 
-  const dateCols = columns.filter(c => colTypes[c] === 'date');
-  const numericCols = columns.filter(c => colTypes[c] === 'numeric');
-  const stringCols = columns.filter(c => colTypes[c] === 'string');
-
-  // 2. Identify primary axes
-  // Respect the LLM's choice if it exists in the data and typing makes sense, otherwise pick the best available
-  let bestXKey = columns.includes(xKey) ? xKey : null;
-  let bestYKey = columns.includes(yKey) ? yKey : null;
-  let bestYKeys = Array.isArray(yKeys) ? yKeys.filter(k => numericCols.includes(k)) : [];
-
-  if (!bestXKey || !columns.includes(bestXKey)) {
-    bestXKey = dateCols[0] || stringCols[0] || columns[0];
-  }
-
-  if (!bestYKeys.length) {
-    if (bestYKey && numericCols.includes(bestYKey)) {
-      bestYKeys = [bestYKey];
-    } else {
-      bestYKeys = numericCols.length ? [...numericCols] : [columns[1] || columns[0]];
-    }
-  }
-
-  bestYKey = bestYKeys[0];
-
-  // 3. Intelligent Chart Selection Rules
-  let finalChartType = 'bar'; // default fallback
-
-  if (rowCount === 1 || Object.keys(colTypes).length > 5) {
-    // Single row or very wide dataset -> Table
-    finalChartType = 'table';
-  } else if (dateCols.length > 0 && bestXKey && colTypes[bestXKey] === 'date') {
-    // Time-series -> Line/Area
-    finalChartType = bestYKeys.length > 1 ? 'line' : (chartType === 'area' ? 'area' : 'line');
-  } else if (colTypes[bestXKey] === 'string') {
-    // Categorical Data
-    if (rowCount <= 5 && bestYKeys.length === 1 && chartType !== 'bar') {
-      // Small category count -> Pie/Donut (if model suggested it, let it be pie/donut, else default pie)
-      finalChartType = (chartType === 'donut') ? 'donut' : 'pie';
-    } else {
-      // Categories + Numeric -> Bar
-      finalChartType = 'bar';
-    }
-  } else if (numericCols.includes(bestXKey) && numericCols.includes(bestYKey) && rowCount > 10) {
-    // Numeric vs Numeric -> Scatter (if suggested) or Line
-    finalChartType = (chartType === 'scatter') ? 'scatter' : 'line';
-  }
-
-  // Final sanity overrides
-  if ((finalChartType === 'pie' || finalChartType === 'donut') && rowCount > 8) {
-    finalChartType = 'bar'; // Pie charts with too many slices are unreadable
-  }
+  // Override rules
+  if (rowCount === 0) finalChartType = 'table';
+  if (rowCount === 1) finalChartType = 'table';
+  if (rowCount > 100 && (finalChartType === 'pie' || finalChartType === 'donut')) finalChartType = 'bar';
+  if (rowCount > 50 && finalChartType === 'gauge') finalChartType = 'bar';
 
   return {
     ...geminiChartConfig,
     chartType: finalChartType,
-    xKey: bestXKey,
-    yKey: bestYKey,
-    yKeys: bestYKeys,
+    xKey: safeXKey,
+    yKey: safeYKey,
+    yKeys: safeYKeys.length > 0 ? safeYKeys : [safeYKey],
   };
 }
 

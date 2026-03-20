@@ -7,10 +7,23 @@ const otpStore = new Map();
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
+  pool: true,               // connection pooling — reuse SMTP connection
+  maxConnections: 5,        // up to 5 parallel connections
+  maxMessages: 100,
+  rateLimit: 10,            // 10 messages per second max
   auth: {
     user: process.env.SMTP_EMAIL,
     pass: process.env.SMTP_APP_PASSWORD,
   },
+});
+
+// Verify connection on server start (add to server.js startup)
+transporter.verify((error) => {
+  if (error) {
+    console.error('[SMTP] Connection failed:', error.message);
+  } else {
+    console.log('[SMTP] Ready to send emails');
+  }
 });
 
 // POST /api/otp/send
@@ -31,30 +44,14 @@ router.post('/otp/send', async (req, res) => {
     to: email,
     subject: 'Your DataLens AI verification code',
     html: `
-      <!DOCTYPE html>
-      <html>
-      <body style="margin:0;padding:0;background:#0f1117;font-family:'Inter',sans-serif;">
-        <div style="max-width:480px;margin:40px auto;background:#1a1d27;border-radius:16px;border:1px solid rgba(255,255,255,0.08);padding:40px;">
-          <div style="text-align:center;margin-bottom:32px;">
-            <div style="display:inline-flex;align-items:center;gap:10px;">
-              <div style="width:36px;height:36px;background:#6366f1;border-radius:8px;display:flex;align-items:center;justify-content:center;">
-                <span style="color:white;font-size:18px;">&#128269;</span>
-              </div>
-              <span style="color:#f1f5f9;font-size:22px;font-weight:700;">DataLens AI</span>
-            </div>
-          </div>
-          <h2 style="color:#f1f5f9;font-size:20px;font-weight:600;margin:0 0 8px 0;text-align:center;">Your verification code</h2>
-          <p style="color:#64748b;font-size:14px;text-align:center;margin:0 0 32px 0;">Enter this code to sign in to DataLens AI</p>
-          <div style="background:#22263a;border-radius:12px;padding:24px;text-align:center;margin-bottom:24px;">
-            <span style="color:#f1f5f9;font-size:40px;font-weight:700;letter-spacing:12px;">${otp}</span>
-          </div>
-          <p style="color:#64748b;font-size:13px;text-align:center;margin:0 0 8px 0;">This code expires in <strong style="color:#f1f5f9;">10 minutes</strong></p>
-          <p style="color:#64748b;font-size:13px;text-align:center;margin:0;">If you did not request this, you can safely ignore this email.</p>
-          <hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:24px 0;">
-          <p style="color:#334155;font-size:12px;text-align:center;margin:0;">DataLens AI &middot; Powered by Groq LLaMA 3.3</p>
-        </div>
-      </body>
-      </html>
+<div style="max-width:420px;margin:0 auto;background:#1a1d27;padding:32px;border-radius:12px;font-family:Arial,sans-serif;">
+  <h1 style="color:#6366f1;font-size:20px;margin:0 0 4px;">DataLens AI</h1>
+  <p style="color:#94a3b8;font-size:13px;margin:0 0 24px;">Your verification code</p>
+  <div style="background:#0f1117;border-radius:8px;padding:20px;text-align:center;margin-bottom:20px;">
+    <span style="color:#f1f5f9;font-size:36px;font-weight:700;letter-spacing:10px;">${otp}</span>
+  </div>
+  <p style="color:#64748b;font-size:12px;margin:0;">Expires in 10 minutes. If you did not request this, ignore this email.</p>
+</div>
     `,
   };
 
@@ -114,3 +111,10 @@ router.post('/otp/verify', (req, res) => {
 });
 
 module.exports = router;
+
+// Warm up SMTP connection when server starts
+setTimeout(() => {
+  transporter.verify((err) => {
+    if (!err) console.log('[SMTP] Connection warmed up');
+  });
+}, 2000);

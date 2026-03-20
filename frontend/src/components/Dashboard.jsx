@@ -3,7 +3,7 @@ import ChartPanel from './ChartPanel';
 import LoadingPanel from './LoadingPanel';
 import ErrorBanner from './ErrorBanner';
 
-export default function Dashboard({ panels, loading, error, onRemovePanel, onDismissError }) {
+export default function Dashboard({ panels, loading, error, onRemovePanel, onDismissError, onFollowUp }) {
   return (
     <div className="flex-1 overflow-y-auto p-6">
       {error && (
@@ -23,6 +23,7 @@ export default function Dashboard({ panels, loading, error, onRemovePanel, onDis
               key={panel.id}
               result={panel}
               onRemove={() => onRemovePanel(panel.id)}
+              onFollowUp={onFollowUp}
             />
           ))}
         </div>

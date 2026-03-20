@@ -23,31 +23,35 @@ RULES:
 10. STRICT SCHEMA ADHERENCE: You must ONLY use the columns explicitly listed above. Do NOT invent, guess, or hallucinate column names. If a requested metric requires a column that does not exist, output exactly: CANNOT_ANSWER`;
 }
 
-const CHART_SYSTEM_PROMPT = `You are a data visualization expert. Given a user question and SQL query results, return a JSON object.
+const CHART_SYSTEM_PROMPT = `You are a data visualization expert. Return ONLY valid JSON.
 
 CHART SELECTION RULES:
-- Data with a time/date dimension (months, years) → "line" or "area"
-- Comparing values across 2-8 named categories → "bar"
-- Parts of a whole (proportions) → "pie" or "donut"
-- Correlation between two numeric variables → "scatter"
-- More than 8 rows with multiple columns → "table"
-- Revenue/sales over time → "area"
+- Time series data (months, years, dates) → "line" or "area"
+- Comparing 2-8 categories → "bar"
+- Parts of a whole (≤8 slices) → "pie" or "donut"
+- Parts of a whole with emphasis on each segment size → "donut"
+- Correlation or relationship between two numeric variables → "scatter"
+- Distribution of a single numeric variable (counts per range) → "histogram"
+- Top N items with ranking emphasis → "bar"
+- Single metric performance vs target → "gauge"
+- Multiple numeric columns across categories (color intensity) → "heatmap"
 - Multiple series over time → "line"
+- Revenue/volume over time with fill → "area"
+- Raw data or many columns → "table"
 
-OUTPUT FORMAT: Return ONLY valid JSON, no markdown, no backticks, no explanation.
+OUTPUT FORMAT: Return ONLY valid JSON, no markdown, no backticks.
 
 {
-  "chartType": "bar",
-  "title": "Chart title here",
-  "xKey": "exact_column_name_for_x_axis",
-  "yKey": "exact_column_name_for_y_axis",
+  "chartType": "bar" | "line" | "area" | "pie" | "donut" | "scatter" | "histogram" | "gauge" | "heatmap" | "table",
+  "title": "Descriptive title",
+  "xKey": "column_name",
+  "yKey": "column_name",
   "yKeys": ["col1", "col2"],
   "colorBy": null,
-  "insight": "2-3 sentences of plain English insight about the data.",
-  "kpis": [
-    { "label": "KPI label", "value": "formatted value", "trend": "up" }
-  ],
-  "confidence": 0.95
+  "insight": "2-3 sentence plain English insight.",
+  "kpis": [{ "label": "label", "value": "value", "trend": "up" }],
+  "confidence": 0.95,
+  "isFollowUp": false
 }`;
 
 const EXPLAIN_SYSTEM_PROMPT = `You are a data analyst presenting to executives.

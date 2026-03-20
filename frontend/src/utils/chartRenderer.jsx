@@ -3,11 +3,11 @@ import {
   BarChart, Bar, LineChart, Line, AreaChart, Area,
   ScatterChart, Scatter, XAxis, YAxis, CartesianGrid,
   Tooltip, Legend, ResponsiveContainer, Cell,
+  RadialBarChart, RadialBar, PieChart, Pie,
 } from 'recharts';
-import { Pie, PieChart } from 'recharts';
 import { smartFormat } from './formatters';
 
-const COLORS = ['#6366F1', '#A855F7', '#22C55E', '#F59E0B', '#ef4444', '#22d3ee', '#f472b6'];
+const COLORS = ['#6366f1', '#22d3ee', '#10b981', '#f59e0b', '#ef4444', '#a78bfa', '#f472b6', '#fb923c'];
 
 const AXIS_STYLE = { fill: '#64748b', fontSize: 11, fontFamily: 'Inter' };
 const GRID_STYLE = { stroke: '#2a2d3e', strokeDasharray: '3 3' };
@@ -88,6 +88,109 @@ export default function ChartRenderer({ chartType, data, xKey, yKey, yKeys = [] 
 
   if (chartType === 'table') return <SortableTable data={data} />;
 
+  // HEATMAP
+  if (chartType === 'heatmap') {
+    const columns = data.length > 0 ? Object.keys(data[0]) : [];
+    const numericCols = columns.filter(c => typeof data[0][c] === 'number');
+    const allVals = data.flatMap(row => numericCols.map(c => row[c]));
+    const minVal = Math.min(...allVals);
+    const maxVal = Math.max(...allVals);
+
+    function getColor(val) {
+      if (typeof val !== 'number') return 'transparent';
+      const safeMax = maxVal;
+      const safeMin = minVal;
+      const ratio = (val - safeMin) / (safeMax - safeMin || 1);
+      const r = Math.round(99 + (239 - 99) * ratio);
+      const g = Math.round(102 + (68 - 102) * ratio);
+      const b = Math.round(241 + (68 - 241) * ratio);
+      return `rgba(${r},${g},${b},${0.2 + ratio * 0.8})`;
+    }
+
+    return (
+      <div style={{ overflow: 'auto', height: '100%' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
+          <thead>
+            <tr>
+              {columns.map(col => (
+                <th key={col} style={{ padding: '6px 10px', textAlign: 'left', color: '#64748b', borderBottom: '0.5px solid #2a2d3e', whiteSpace: 'nowrap' }}>
+                  {col}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {data.map((row, i) => (
+              <tr key={i}>
+                {columns.map(col => (
+                  <td key={col} style={{
+                    padding: '6px 10px',
+                    borderBottom: '0.5px solid #1e2130',
+                    background: getColor(row[col]),
+                    color: '#f1f5f9',
+                    whiteSpace: 'nowrap',
+                  }}>
+                    {typeof row[col] === 'number' ? Number(row[col]).toLocaleString() : row[col]}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  }
+
+  // GAUGE
+  if (chartType === 'gauge') {
+    const gaugeData = data.slice(0, 5).map((d, i) => ({
+      name: d[xKey],
+      value: d[yKey],
+      fill: COLORS[i % COLORS.length],
+    }));
+    return (
+      <ResponsiveContainer width="100%" height="100%">
+        <RadialBarChart
+          cx="50%" cy="60%"
+          innerRadius="20%" outerRadius="90%"
+          data={gaugeData}
+          startAngle={180} endAngle={0}
+        >
+          <RadialBar
+            minAngle={15}
+            background={{ fill: '#22263a' }}
+            clockWise
+            dataKey="value"
+            label={{ position: 'insideStart', fill: '#f1f5f9', fontSize: 11 }}
+          />
+          <Legend
+            iconSize={10}
+            formatter={(v) => <span style={{ color: '#94a3b8', fontSize: 12 }}>{v}</span>}
+          />
+          <Tooltip {...TOOLTIP_STYLE} />
+        </RadialBarChart>
+      </ResponsiveContainer>
+    );
+  }
+
+  // HISTOGRAM
+  if (chartType === 'histogram') {
+    return (
+      <ResponsiveContainer width="100%" height="100%">
+        <BarChart data={data} margin={{ top: 10, right: 20, bottom: 20, left: 10 }} barCategoryGap="1%">
+          <CartesianGrid strokeDasharray="3 3" stroke="#2a2d3e" />
+          <XAxis dataKey={xKey} tick={{ fill: '#64748b', fontSize: 11 }} />
+          <YAxis tick={{ fill: '#64748b', fontSize: 11 }} />
+          <Tooltip contentStyle={{ backgroundColor: '#22263a', border: '1px solid #6366f1', borderRadius: '8px', color: '#f1f5f9' }} />
+          <Bar dataKey={yKey} fill="#6366f1" radius={[2, 2, 0, 0]}>
+            {data.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
+    );
+  }
+
+  // DONUT / PIE
   if (chartType === 'pie' || chartType === 'donut') {
     const innerRadius = chartType === 'donut' ? 55 : 0;
     return (
@@ -99,9 +202,9 @@ export default function ChartRenderer({ chartType, data, xKey, yKey, yKeys = [] 
             nameKey={xKey}
             cx="50%"
             cy="50%"
-            outerRadius={100}
+            outerRadius={95}
             innerRadius={innerRadius}
-            paddingAngle={2}
+            paddingAngle={chartType === 'donut' ? 3 : 0}
             label={({ name, percent }) => `${truncateLabel(name, 10)} ${(percent * 100).toFixed(0)}%`}
             labelLine={false}
           >
@@ -114,6 +217,7 @@ export default function ChartRenderer({ chartType, data, xKey, yKey, yKeys = [] 
     );
   }
 
+  // SCATTER
   if (chartType === 'scatter') {
     return (
       <ResponsiveContainer width="100%" height="100%">
@@ -122,12 +226,15 @@ export default function ChartRenderer({ chartType, data, xKey, yKey, yKeys = [] 
           <XAxis dataKey={xKey} tick={AXIS_STYLE} name={xKey} tickFormatter={v => truncateLabel(v)} />
           <YAxis dataKey={yKey} tick={AXIS_STYLE} name={yKey} />
           <Tooltip {...TOOLTIP_STYLE} cursor={{ strokeDasharray: '3 3' }} />
-          <Scatter data={data} fill="#10b981" />
+          <Scatter data={data} fill="#10b981">
+            {data.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
+          </Scatter>
         </ScatterChart>
       </ResponsiveContainer>
     );
   }
 
+  // LINE
   if (chartType === 'line') {
     return (
       <ResponsiveContainer width="100%" height="100%">
@@ -154,6 +261,7 @@ export default function ChartRenderer({ chartType, data, xKey, yKey, yKeys = [] 
     );
   }
 
+  // AREA
   if (chartType === 'area') {
     return (
       <ResponsiveContainer width="100%" height="100%">
@@ -179,7 +287,7 @@ export default function ChartRenderer({ chartType, data, xKey, yKey, yKeys = [] 
     );
   }
 
-  // Default: bar chart
+  // DEFAULT: BAR
   return (
     <ResponsiveContainer width="100%" height="100%">
       <BarChart data={data} margin={{ top: 10, right: 20, bottom: 20, left: 10 }}>

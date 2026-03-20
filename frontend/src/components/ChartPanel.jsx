@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Download, Code2, X, MoreHorizontal, Info, Loader2, Sparkles } from 'lucide-react';
+import { Download, Code2, X, MoreHorizontal, Info, Loader2, Sparkles, MessageSquare } from 'lucide-react';
 import ChartRenderer from '../utils/chartRenderer';
 
 const TYPE_LABELS = {
@@ -7,7 +7,7 @@ const TYPE_LABELS = {
   pie: 'Pie Chart', donut: 'Donut Chart', scatter: 'Scatter Plot', table: 'Data Table',
 };
 
-export default function ChartPanel({ result, onRemove }) {
+export default function ChartPanel({ result, onRemove, onFollowUp }) {
   const { chartConfig, data, sql } = result;
   const [showMenu, setShowMenu] = useState(false);
   const [showSQL, setShowSQL] = useState(false);
@@ -168,6 +168,24 @@ export default function ChartPanel({ result, onRemove }) {
           )}
         </div>
       )}
+
+      {/* NEW: Follow-up bar at bottom */}
+      <div className="border-t border-slate-800 px-4 py-2 flex items-center justify-between">
+        <button
+          onClick={() => onFollowUp(chartConfig?.title, sql)}
+          className="text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1.5 transition-colors"
+        >
+          <MessageSquare size={11} />
+          Follow up on this chart
+        </button>
+        <div className="flex items-center gap-2">
+          {result.isFollowUp && (
+            <span className="text-xs text-slate-600 bg-bg-elevated px-2 py-0.5 rounded-full">
+              follow-up
+            </span>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
